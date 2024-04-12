@@ -1,17 +1,15 @@
 package engine
 
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
+import engine.entity.Quiz
+import engine.service.UniqueIdGenerator
+import org.springframework.stereotype.Repository
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
 
 typealias QuizIdentifier = Int
 
-@Component
-class WebQuizRepository {
-
-    @Autowired
-    private lateinit var idGenerator: UniqueIdGenerator
+@Repository
+class WebQuizRepository(private val idGenerator: UniqueIdGenerator) {
 
     private val quizMap: ConcurrentMap<QuizIdentifier, Quiz> = ConcurrentHashMap()
 
@@ -40,13 +38,4 @@ class WebQuizRepository {
     fun deleteQuizById(id: QuizIdentifier): Boolean = quizMap.remove(id) != null
 
     fun deleteAllQuizzes() = quizMap.clear()
-
-    /*fun solveQuiz(id: QuizIdentifier, answer: Answer): Boolean {
-        val quiz = quizMap[id] ?: return false
-        return quiz.answer == answer
-    }*/
-
-    //fun getQuizIds() = quizMap.keys.toList()
-
-    //fun getQuizCount() = quizMap.size
 }
