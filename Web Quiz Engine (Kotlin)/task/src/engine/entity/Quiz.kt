@@ -1,21 +1,10 @@
-package engine
+package engine.entity
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
+import engine.QuizIdentifier
 import jakarta.validation.constraints.NotBlank
-import jakarta.validation.constraints.NotEmpty
 import jakarta.validation.constraints.Size
-import org.springframework.stereotype.Component
-import java.util.concurrent.atomic.AtomicInteger
-
-@Component
-class UniqueIdGenerator {
-    private val currentId = AtomicInteger(0)
-
-    fun getNextId(): Int {
-        return currentId.incrementAndGet()
-    }
-}
 
 data class Quiz(
     val id: QuizIdentifier? = null,
@@ -27,6 +16,3 @@ data class Quiz(
     val options: List<String>,
     @JsonInclude(JsonInclude.Include.NON_NULL) @JsonProperty("answer") val answerList: List<Int>? = null,
     )
-
-
-
