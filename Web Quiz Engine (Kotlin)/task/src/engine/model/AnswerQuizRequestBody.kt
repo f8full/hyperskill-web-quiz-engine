@@ -1,3 +1,3 @@
 package engine.model
 
-data class AnswerQuizRequestBody(val answerList: List<Int>?)
+data class AnswerQuizRequestBody(val answer: List<Int>?)

@@ -16,7 +16,7 @@ class WebQuizApiController(private val quizService: QuizService) {
     fun answerQuiz(@RequestBody reqBody: AnswerQuizRequestBody, @PathVariable quizId: Int): QuizPostResponseBody =
         quizService.checkQuizSolution(
                 quizId = quizId,
-                answerList = reqBody.answerList)
+                answerList = reqBody.answer)
     @PostMapping("/api/quizzes")
     @ResponseStatus(HttpStatus.OK)
     fun addQuiz(@Valid @RequestBody quiz: Quiz): Quiz =

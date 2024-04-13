@@ -9,31 +9,44 @@ import engine.entity.Quiz
 import org.springframework.stereotype.Service
 
 @Service
-class QuizService(private val quizRepository: WebQuizRepository) {
+class QuizService(
+    private val quizRepository: WebQuizRepository,
+) {
 
     fun findQuizById(
         id: Int,
         omitId: Boolean = false,
         omitAnswerList: Boolean = false
         ) =
-        quizRepository.getQuizById(
-            id = id,
-            omitId = omitId,
-            omitAnswerList = omitAnswerList,
-    )?: throw QuizNotFoundException(quizId = id)
+        quizRepository
+            .findById(id)
+            .orElseThrow { QuizNotFoundException(quizId = id) }
+            .let { quiz ->
+                quiz.copy(
+                id = if (omitId) null else id,
+                answerList = if (omitAnswerList) null else quiz.answerList,
+            )
+        }
 
     fun findQuizList(omitAnswerList: Boolean = false) =
-        quizRepository.getAllQuizList(omitAnswerList = omitAnswerList)
+        quizRepository.findAll().map { quiz ->
+            quiz.copy(
+                answerList = if (omitAnswerList) null else quiz.answerList,
+            )
+        }
 
     fun checkQuizSolution(quizId: Int, answerList: List<Int>?): QuizPostResponseBody =
-        quizRepository.getQuizById(id = quizId)?.let { quiz ->
+        quizRepository.findById(quizId)
+            .orElseThrow { QuizNotFoundException(quizId = quizId)}
+            .let { quiz ->
             if ((quiz.answerList.isNullOrEmpty() && answerList.isNullOrEmpty()) ||
                 (quiz.answerList?.containsAll(answerList.orEmpty()) == true &&
                         answerList?.containsAll(quiz.answerList) == true))
                 QuizPostResponseBodyCorrect()
             else
                 QuizPostResponseBodyIncorrect()
-        }?: throw QuizNotFoundException(quizId = quizId)
+        }
 
-    fun addQuiz(quiz: Quiz) = quizRepository.addQuiz(quiz)
+    fun addQuiz(quiz: Quiz): Quiz =
+        quizRepository.save(quiz)
 }
