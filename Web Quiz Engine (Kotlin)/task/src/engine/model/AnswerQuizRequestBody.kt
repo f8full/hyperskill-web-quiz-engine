@@ -1,3 +1,8 @@
 package engine.model
 
-data class AnswerQuizRequestBody(val answerList: List<Int>?)
+import com.fasterxml.jackson.annotation.JsonProperty
+
+data class AnswerQuizRequestBody(
+    @JsonProperty("answer")
+    val answerList: List<Int>?,
+    )

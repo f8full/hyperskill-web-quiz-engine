@@ -2,6 +2,7 @@ package engine
 
 import engine.model.AnswerQuizRequestBody
 import engine.entity.Quiz
+import engine.model.QuizDto
 import engine.model.QuizPostResponseBody
 import engine.service.QuizService
 import jakarta.validation.Valid
@@ -15,23 +16,21 @@ class WebQuizApiController(private val quizService: QuizService) {
     @ResponseStatus(HttpStatus.OK)
     fun answerQuiz(@RequestBody reqBody: AnswerQuizRequestBody, @PathVariable quizId: Int): QuizPostResponseBody =
         quizService.checkQuizSolution(
-                quizId = quizId,
-                answerList = reqBody.answerList)
+            quizId = quizId,
+            answerList = reqBody.answerList,
+        )
     @PostMapping("/api/quizzes")
     @ResponseStatus(HttpStatus.OK)
-    fun addQuiz(@Valid @RequestBody quiz: Quiz): Quiz =
-        quizService.addQuiz(quiz = quiz).apply {
-            println("Quiz added: $quiz")
-        }
+    fun addQuiz(@Valid @RequestBody quizDto: QuizDto): Quiz =
+        quizService.addQuiz( quizDto = quizDto)
 
     @GetMapping("/api/quizzes/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun getQuizById(@PathVariable(name = "id") quizId: Int): Quiz =
-        quizService.findQuizById(quizId, omitAnswerList = true)
+    fun getQuizById(@PathVariable(name = "id") quizId: Int): QuizDto =
+        quizService.findQuizById(quizId)
 
     @GetMapping("/api/quizzes")
     @ResponseStatus(HttpStatus.OK)
-    fun getQuizList(): List<Quiz> =
-        quizService.findQuizList(omitAnswerList = true)
-
+    fun getQuizList(): List<QuizDto> =
+        quizService.findQuizList()
 }
