@@ -2,7 +2,7 @@ package engine
 
 import engine.model.AnswerQuizRequestBody
 import engine.entity.Quiz
-import engine.model.QuizPostResponseBody
+import engine.model.AnswerQuizResponseBody
 import engine.service.QuizService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
@@ -13,7 +13,7 @@ class WebQuizApiController(private val quizService: QuizService) {
 
     @PostMapping("/api/quizzes/{quizId}/solve")
     @ResponseStatus(HttpStatus.OK)
-    fun answerQuiz(@RequestBody reqBody: AnswerQuizRequestBody, @PathVariable quizId: Int): QuizPostResponseBody =
+    fun answerQuiz(@RequestBody reqBody: AnswerQuizRequestBody, @PathVariable quizId: Int): AnswerQuizResponseBody =
         quizService.checkQuizSolution(
                 quizId = quizId,
                 answerList = reqBody.answer)
