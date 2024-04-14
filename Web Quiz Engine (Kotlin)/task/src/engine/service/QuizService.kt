@@ -1,9 +1,9 @@
 package engine.service
 
 import engine.WebQuizRepository
-import engine.model.QuizPostResponseBody
-import engine.model.QuizPostResponseBodyCorrect
-import engine.model.QuizPostResponseBodyIncorrect
+import engine.model.AnswerQuizResponseBody
+import engine.model.AnswerQuizResponseBodyCorrect
+import engine.model.AnswerQuizResponseBodyIncorrect
 import engine.exception.QuizNotFoundException
 import engine.entity.Quiz
 import org.springframework.stereotype.Service
@@ -35,16 +35,16 @@ class QuizService(
             )
         }
 
-    fun checkQuizSolution(quizId: Int, answerList: List<Int>?): QuizPostResponseBody =
+    fun checkQuizSolution(quizId: Int, answerList: List<Int>?): AnswerQuizResponseBody =
         quizRepository.findById(quizId)
             .orElseThrow { QuizNotFoundException(quizId = quizId)}
             .let { quiz ->
             if ((quiz.answerList.isNullOrEmpty() && answerList.isNullOrEmpty()) ||
                 (quiz.answerList?.containsAll(answerList.orEmpty()) == true &&
                         answerList?.containsAll(quiz.answerList) == true))
-                QuizPostResponseBodyCorrect()
+                AnswerQuizResponseBodyCorrect()
             else
-                QuizPostResponseBodyIncorrect()
+                AnswerQuizResponseBodyIncorrect()
         }
 
     fun addQuiz(quiz: Quiz): Quiz =
