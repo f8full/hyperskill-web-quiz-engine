@@ -15,19 +15,14 @@ class QuizService(
 ) {
 
     fun findQuizById(id: Int): QuizDto =
-        quizRepository
-            .findById(id)
-            .orElseThrow { QuizNotFoundException(quizId = id) }
-            .let {
-                with(it) {
-                    QuizDto(
-                        id = id,
-                        title = title,
-                        text = text,
-                        optionList = optionList,
-                    )
-                }
-            }
+        with(findQuizByIdOrThrow(quizId = id)) {
+            QuizDto(
+                id = id,
+                title = title,
+                text = text,
+                optionList = optionList,
+            )
+        }
 
     fun findQuizList(): List<QuizDto> =
         quizRepository.findAll().map { quiz ->
@@ -42,16 +37,20 @@ class QuizService(
         }
 
     fun checkQuizSolution(quizId: Int, answerList: List<Int>?): QuizPostResponseBody =
-        quizRepository.findById(quizId)
-            .orElseThrow { QuizNotFoundException(quizId = quizId)}
+        findQuizByIdOrThrow(quizId)
             .let { quiz ->
             if ((quiz.answerList.isNullOrEmpty() && answerList.isNullOrEmpty()) ||
+                quiz.answerList?.size == answerList?.size &&
                 (quiz.answerList?.containsAll(answerList.orEmpty()) == true &&
                         answerList?.containsAll(quiz.answerList) == true))
                 QuizPostResponseBodyCorrect()
             else
                 QuizPostResponseBodyIncorrect()
         }
+
+    private fun findQuizByIdOrThrow(quizId: Int): Quiz = quizRepository
+        .findById(quizId)
+        .orElseThrow { QuizNotFoundException(quizId = quizId) }
 
     fun addQuiz(quizDto: QuizDto): Quiz =
         with(quizDto) {
