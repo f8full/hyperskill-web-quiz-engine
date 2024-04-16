@@ -48,10 +48,6 @@ class QuizService(
                 QuizPostResponseBodyIncorrect()
         }
 
-    private fun findQuizByIdOrThrow(quizId: Int): Quiz = quizRepository
-        .findById(quizId)
-        .orElseThrow { QuizNotFoundException(quizId = quizId) }
-
     fun addQuiz(quizDto: QuizDto): Quiz =
         with(quizDto) {
             quizRepository.save(
@@ -63,4 +59,8 @@ class QuizService(
                 )
             )
         }
+
+    private fun findQuizByIdOrThrow(quizId: Int): Quiz = quizRepository
+        .findById(quizId)
+        .orElseThrow { QuizNotFoundException(quizId = quizId) }
 }
