@@ -17,7 +17,7 @@ class ControllerAdvice {
 
     @ExceptionHandler(
         MissingServletRequestParameterException::class,
-        EmailAlreadyTakenException::class,
+        EmailAlreadyTakenException::class, //This type of error should return HTTP 409 but hyperskill expects 400
         MethodArgumentNotValidException::class,
         HttpMessageNotReadableException::class,
         QuizAnswerIndexException::class

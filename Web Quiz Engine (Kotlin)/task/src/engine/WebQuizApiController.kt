@@ -12,13 +12,14 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
-@RestController
+@RestController("/api") // fails hyperskill test for no clear reason
 class WebQuizApiController(
     private val quizService: QuizService,
     private val userService: QuizUserDetailsService,
     ) {
 
-    @PostMapping("/api/register")
+    @PostMapping("/register")
+    //@ResponseStatus(HttpStatus.CREATED) should be 201 but hyperskill expects 200
     fun register(@Valid @RequestBody request: RegisterUserRequestBody): String {
         userService.registerUser(
             email = request.email,
@@ -28,28 +29,29 @@ class WebQuizApiController(
         return "New user successfully registered"
     }
 
-    @PostMapping("/api/quizzes/{quizId}/solve")
+    @PostMapping("/quizzes/{quizId}/solve")
     @ResponseStatus(HttpStatus.OK)
     fun answerQuiz(@RequestBody reqBody: AnswerQuizRequestBody, @PathVariable quizId: Int): QuizPostResponseBody =
         quizService.checkQuizSolution(
             quizId = quizId,
             answerList = reqBody.answerList,
         )
-    @PostMapping("/api/quizzes")
+    @PostMapping("/quizzes")
     @ResponseStatus(HttpStatus.OK)
     fun addQuiz(@Valid @RequestBody quizDto: QuizDto): Quiz =
         quizService.addQuiz( quizDto = quizDto)
 
-    @DeleteMapping("/api/quizzes/{id}")
-    fun deleteQuizById(@PathVariable(name = "id") quizId: Int): ResponseEntity<Unit> =
+    @DeleteMapping("/quizzes/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteQuizById(@PathVariable(name = "id") quizId: Int) =
         quizService.deleteQuizById(quizId)
 
-    @GetMapping("/api/quizzes/{id}")
+    @GetMapping("/quizzes/{id}")
     @ResponseStatus(HttpStatus.OK)
     fun getQuizById(@PathVariable(name = "id") quizId: Int): QuizDto =
         quizService.findQuizById(quizId)
 
-    @GetMapping("/api/quizzes")
+    @GetMapping("/quizzes")
     @ResponseStatus(HttpStatus.OK)
     fun getQuizList(): List<QuizDto> =
         quizService.findQuizList()

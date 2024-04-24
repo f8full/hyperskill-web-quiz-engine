@@ -6,11 +6,9 @@ import engine.model.QuizPostResponseBodyCorrect
 import engine.model.QuizPostResponseBodyIncorrect
 import engine.exception.QuizNotFoundException
 import engine.entity.Quiz
-import engine.entity.QuizUser
 import engine.exception.QuizAuthorMismatchException
 import engine.model.QuizDto
-import org.springframework.http.ResponseEntity
-import org.springframework.security.core.context.SecurityContextHolder
+import engine.util.SecurityUtil
 import org.springframework.stereotype.Service
 
 @Service
@@ -28,19 +26,17 @@ class QuizService(
             )
         }
 
-    fun deleteQuizById(quizId: Int): ResponseEntity<Unit> =
+    fun deleteQuizById(quizId: Int): Unit =
         with(findQuizByIdOrThrow(quizId = quizId)) {
-            val user = SecurityContextHolder.getContext().authentication.principal as QuizUser
-            if (author.userId != user.userId) {
+            if (author.userId != SecurityUtil.authenticatedUser.userId) {
                 throw QuizAuthorMismatchException(
                     quizAuthor = author,
-                    quizDeletionRequester = user,
+                    quizDeletionRequester = SecurityUtil.authenticatedUser,
                     quizId = quizId
                 )
             }
 
             quizRepository.delete(this)
-            ResponseEntity.noContent().build()
         }
 
     fun findQuizList(): List<QuizDto> =
@@ -75,7 +71,7 @@ class QuizService(
                     text = text,
                     optionList = optionList,
                     answerList = answerList,
-                    author = SecurityContextHolder.getContext().authentication.principal as QuizUser
+                    author = SecurityUtil.authenticatedUser
                 )
             )
         }
