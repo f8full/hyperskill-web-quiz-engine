@@ -6,9 +6,11 @@ import engine.model.QuizPostResponseBodyCorrect
 import engine.model.QuizPostResponseBodyIncorrect
 import engine.exception.QuizNotFoundException
 import engine.entity.Quiz
+import engine.entity.QuizUser
 import engine.exception.QuizAuthorMismatchException
 import engine.model.QuizDto
 import engine.util.SecurityUtil
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 
 @Service
@@ -28,10 +30,10 @@ class QuizService(
 
     fun deleteQuizById(quizId: Int): Unit =
         with(findQuizByIdOrThrow(quizId = quizId)) {
-            if (author.userId != SecurityUtil.authenticatedUser.userId) {
+            if (author.userId != SecurityUtil.authenticatedUser().userId) {
                 throw QuizAuthorMismatchException(
                     quizAuthor = author,
-                    quizDeletionRequester = SecurityUtil.authenticatedUser,
+                    quizDeletionRequester = SecurityUtil.authenticatedUser(),
                     quizId = quizId
                 )
             }
@@ -71,7 +73,7 @@ class QuizService(
                     text = text,
                     optionList = optionList,
                     answerList = answerList,
-                    author = SecurityUtil.authenticatedUser
+                    author = SecurityUtil.authenticatedUser()
                 )
             )
         }

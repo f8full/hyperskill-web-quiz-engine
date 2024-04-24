@@ -19,6 +19,7 @@ class SecurityConfig {
             .authorizeHttpRequests { auth ->
                 auth
                     .requestMatchers("/api/register").permitAll()
+                    .requestMatchers("/h2-console").permitAll()
                     .requestMatchers("/actuator/shutdown").permitAll()
                     .requestMatchers("/api/quizzes/**").hasAuthority("USER")
                     .anyRequest().denyAll()
