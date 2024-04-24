@@ -21,4 +21,8 @@ data class Quiz(
     @ElementCollection(fetch = FetchType.EAGER)
     @Column(name = "answer_list")
     val answerList: List<Int>? = null,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    val author: QuizUser
     )
