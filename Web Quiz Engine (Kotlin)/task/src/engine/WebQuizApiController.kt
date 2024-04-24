@@ -12,7 +12,8 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
-@RestController("/api") // fails hyperskill test for no clear reason
+@RestController
+@RequestMapping("/api")
 class WebQuizApiController(
     private val quizService: QuizService,
     private val userService: QuizUserDetailsService,
