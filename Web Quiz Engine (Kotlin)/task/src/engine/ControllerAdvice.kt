@@ -32,4 +32,8 @@ class ControllerAdvice {
     @ExceptionHandler(QuizAuthorMismatchException::class)
     fun handleQuizAuthorMismatchException(e: QuizAuthorMismatchException) =
         ResponseEntity(mapOf("error" to e.message), HttpStatus.FORBIDDEN)
+
+    @ExceptionHandler(KotlinNullPointerException::class)
+    fun handleKotlinNullPointerException(e: KotlinNullPointerException) =
+        ResponseEntity(mapOf("error" to e.message), HttpStatus.INTERNAL_SERVER_ERROR)
 }
