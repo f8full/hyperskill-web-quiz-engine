@@ -1,15 +1,14 @@
 package engine
 
-import engine.model.AnswerQuizRequestBody
 import engine.entity.Quiz
-import engine.model.QuizDto
-import engine.model.QuizPostResponseBody
-import engine.model.RegisterUserRequestBody
+import engine.model.*
 import engine.service.QuizService
 import engine.service.QuizUserDetailsService
 import jakarta.validation.Valid
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -54,6 +53,13 @@ class WebQuizApiController(
 
     @GetMapping("/quizzes")
     @ResponseStatus(HttpStatus.OK)
-    fun getQuizList(): List<QuizDto> =
-        quizService.findQuizList()
+    fun getQuizPage(@PageableDefault(page = 0, size = 10) pageable: Pageable
+    ): Page<QuizDto> =
+        quizService.findQuizPage(pageable = pageable)
+
+    @GetMapping("/quizzes/completed")
+    @ResponseStatus(HttpStatus.OK)
+    fun getCompletedQuizList(@PageableDefault(page = 0, size = 10) pageable: Pageable
+    ): Page<QuizCompletionDto> =
+        quizService.findCompletedQuizPageForCurrentUser(pageable = pageable)
 }
